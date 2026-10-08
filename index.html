@@ -96,6 +96,7 @@ return "I heard you: “"+raw+"”. Local mode can handle commands, but open-end
 }
 async function aiReply(raw){
 const endpoint= "https://jarvis-backend-v9tx.onrender.com/v1/chat/completions";
+  const model = "gemini-1.5-flash";
 
 if(!endpoint) return localReply(raw);
 try{
