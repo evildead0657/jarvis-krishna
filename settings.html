@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS Settings</title>
+    <style>
+        body { background-color: #121212; color: #00ffcc; font-family: sans-serif; text-align: center; padding: 50px; }
+        input, select { padding: 10px; width: 80%; margin: 10px 0; border-radius: 5px; border: none; }
+        button { background-color: #00ffcc; color: black; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>⚙️ JARVIS Settings</h1>
+    
+    <label>Choose AI Brain (Model):</label><br>
+    <select id="aiModel">
+        <option value="gemini">Google Gemini AI</option>
+        <option value="groq">Groq (Llama 3 - Open Source)</option>
+    </select><br><br>
+
+    <label>Enter API Key:</label><br>
+    <input type="password" id="apiKey" placeholder="Paste your API key here..."><br><br>
+
+    <button onclick="saveConfig()">Save & Activate JARVIS</button>
+
+    <script>
+        // Pehle se save ki hui settings load karna
+        document.getElementById('aiModel').value = localStorage.getItem('jarvis_model') || 'gemini';
+        document.getElementById('apiKey').value = localStorage.getItem('jarvis_api_key') || '';
+
+        // Nayi settings save karna
+        function saveConfig() {
+            let model = document.getElementById('aiModel').value;
+            let key = document.getElementById('apiKey').value;
+            
+            localStorage.setItem('jarvis_model', model);
+            localStorage.setItem('jarvis_api_key', key);
+            
+            alert("Settings securely saved in your device!");
+            window.location.href = "index.html"; // Save hone ke baad main page par bhej dega
+        }
+    </script>
+</body>
+</html>
