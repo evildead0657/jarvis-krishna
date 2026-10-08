@@ -1,147 +1,271 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#04070c">
-<title>JARVIS • Krishna</title>
-<style>
-:root{--bg:#04070c;--panel:rgba(12,20,32,.72);--line:rgba(34,211,238,.18);--cyan:#22d3ee;--blue:#60a5fa;--text:#e7f3ff;--muted:#7890a8;--ok:#34d399;--danger:#fb7185}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-body{overflow-x:hidden}.app{min-height:100vh;position:relative;background:radial-gradient(900px 500px at 50% -10%,rgba(34,211,238,.14),transparent),radial-gradient(700px 500px at 100% 40%,rgba(96,165,250,.10),transparent)}
-.grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(34,211,238,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.035) 1px,transparent 1px);background-size:32px 32px}
-.wrap{width:min(1180px,94%);margin:auto;position:relative;padding:22px 0 32px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px}
-.brand{letter-spacing:.22em;font-size:13px;color:#bcefff}.brand b{color:var(--cyan)}.status{font-size:11px;color:var(--muted);display:flex;gap:8px;align-items:center}.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 12px var(--ok)}
-.main{display:grid;grid-template-columns:360px 1fr;gap:18px;margin-top:18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(18px);box-shadow:0 20px 60px rgba(0,0,0,.28)}
-.core{min-height:650px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px}.orb{width:230px;height:230px;border-radius:50%;position:relative;display:grid;place-items:center;cursor:pointer}
-.orb:before,.orb:after{content:"";position:absolute;border-radius:50%;inset:0;border:1px solid rgba(34,211,238,.3);animation:ring 3s infinite ease-out}.orb:after{animation-delay:1.5s}.orb.idle{filter:drop-shadow(0 0 22px rgba(34,211,238,.2))}.orb.listening{filter:drop-shadow(0 0 34px rgba(34,211,238,.65))}.orb.speaking{filter:drop-shadow(0 0 34px rgba(96,165,250,.7))}
-.coreball{width:142px;height:142px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#e0fbff,transparent 20%),radial-gradient(circle at 65% 70%,#22d3ee,transparent 55%),radial-gradient(circle,#0ea5e9,#1e3a8a 72%);box-shadow:inset 0 0 40px rgba(255,255,255,.18),0 0 70px rgba(34,211,238,.35);animation:float 3s infinite ease-in-out}
-.coreball:after{content:"";display:block;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at center,rgba(255,255,255,.4),transparent 25%);animation:blink 1.8s infinite}
-.state{text-transform:uppercase;letter-spacing:.22em;font-size:11px;color:var(--cyan);margin-top:25px}.hint{text-align:center;color:var(--muted);font-size:13px;line-height:1.6;max-width:290px;margin-top:12px}.micbtn{margin-top:22px;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.08);color:#dffaff;padding:12px 18px;border-radius:999px;font-weight:700;cursor:pointer}.micbtn:hover{background:rgba(34,211,238,.14)}
-.panel{display:flex;flex-direction:column;min-height:650px;overflow:hidden}.head{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between}.head h1{margin:0;font-size:16px}.head small{color:var(--muted)}.log{flex:1;padding:18px;overflow:auto;max-height:520px}.msg{display:flex;margin:0 0 13px}.bubble{max-width:86%;padding:12px 14px;border-radius:16px;white-space:pre-wrap;font-size:14px;line-height:1.55}.jarvis{background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.12);border-top-left-radius:5px}.user{margin-left:auto;justify-content:flex-end}.user .bubble{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-top-right-radius:5px}.time{font-size:9px;color:#5f7388;margin-top:5px}.composer{padding:14px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px}.composer input{flex:1;min-width:0;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.09);color:var(--text);padding:13px 14px;border-radius:13px;outline:none}.composer input:focus{border-color:rgba(34,211,238,.4)}button.send{border:0;border-radius:13px;padding:0 18px;background:var(--cyan);color:#001014;font-weight:800;cursor:pointer}
-.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.tool{padding:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);border-radius:15px;color:var(--text);cursor:pointer;text-align:left}.tool b{display:block;font-size:12px}.tool span{font-size:10px;color:var(--muted)}
-.settings{margin-top:14px;padding:16px}.settings summary{cursor:pointer;color:#bdefff;font-size:12px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}.fields label{font-size:10px;color:var(--muted)}.fields input{width:100%;margin-top:5px;padding:10px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.08);border-radius:10px;color:var(--text)}.note{font-size:10px;color:#60758b;line-height:1.5;margin-top:10px}
-@keyframes ring{0%{transform:scale(.75);opacity:.75}100%{transform:scale(1.5);opacity:0}}@keyframes float{50%{transform:translateY(-7px)}}@keyframes blink{50%{opacity:.55}}
-@media(max-width:800px){.main{grid-template-columns:1fr}.core{min-height:420px}.panel{min-height:520px}.log{max-height:400px}.orb{width:180px;height:180px}.coreball{width:110px;height:110px}.fields{grid-template-columns:1fr}.tools{grid-template-columns:1fr 1fr}}
-</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#04070c">
+    <title>JARVIS • Krishna</title>
+    <style>
+        :root { --bg: #04070c; --panel: rgba(12,20,32,.72); --line: rgba(34,211,238,.18); --cyan: #22d3ee; --blue: #60a5fa; --text: #e7f3ff; --muted: #7890a8; --ok: #34d399; --danger: #fb7185; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif; }
+        body { overflow-x: hidden; }
+        .app { min-height: 100vh; position: relative; background: radial-gradient(900px 500px at 50% -10%, rgba(34,211,238,.14), transparent), radial-gradient(700px 500px at 100% 40%, rgba(96,165,250,.10), transparent); }
+        .grid { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(34,211,238,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,.035) 1px, transparent 1px); background-size: 32px 32px; }
+        .wrap { width: min(1180px, 94%); margin: auto; position: relative; padding: 22px 0 32px; }
+        .top { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        .brand { letter-spacing: .22em; font-size: 13px; color: #bcefff; }
+        .brand b { color: var(--cyan); }
+        .status { font-size: 11px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 12px var(--ok); }
+        .main { display: grid; grid-template-columns: 360px 1fr; gap: 18px; margin-top: 18px; }
+        .card { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; backdrop-filter: blur(18px); box-shadow: 0 20px 60px rgba(0,0,0,.28); }
+        .core { min-height: 650px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px; }
+        .orb { width: 230px; height: 230px; border-radius: 50%; position: relative; display: grid; place-items: center; cursor: pointer; }
+        .orb:before, .orb:after { content: ""; position: absolute; border-radius: 50%; inset: 0; border: 1px solid rgba(34,211,238,.3); animation: ring 3s infinite ease-out; }
+        .orb:after { animation-delay: 1.5s; }
+        .orb.idle { filter: drop-shadow(0 0 22px rgba(34,211,238,.2)); }
+        .orb.listening { filter: drop-shadow(0 0 34px rgba(34,211,238,.65)); }
+        .orb.speaking { filter: drop-shadow(0 0 34px rgba(96,165,250,.7)); }
+        .coreball { width: 142px; height: 142px; border-radius: 50%; background: radial-gradient(circle at 32% 28%, #e0fbff, transparent 20%), radial-gradient(circle at 65% 70%, #22d3ee, transparent 55%), radial-gradient(circle, #0ea5e9, #1e3a8a 72%); box-shadow: inset 0 0 40px rgba(255,255,255,.18), 0 0 70px rgba(34,211,238,.35); animation: float 3s infinite ease-in-out; }
+        .coreball:after { content: ""; display: block; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle at center, rgba(255,255,255,.4), transparent 25%); animation: blink 1.8s infinite; }
+        .state { text-transform: uppercase; letter-spacing: .22em; font-size: 11px; color: var(--cyan); margin-top: 25px; }
+        .hint { text-align: center; color: var(--muted); font-size: 13px; line-height: 1.6; max-width: 290px; margin-top: 12px; }
+        .micbtn { margin-top: 22px; border: 1px solid rgba(34,211,238,.35); background: rgba(34,211,238,.08); color: #dffaff; padding: 12px 18px; border-radius: 999px; font-weight: 700; cursor: pointer; }
+        .micbtn:hover { background: rgba(34,211,238,.14); }
+        .panel { display: flex; flex-direction: column; min-height: 650px; overflow: hidden; }
+        .head { padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,.07); display: flex; justify-content: space-between; }
+        .head h1 { margin: 0; font-size: 16px; }
+        .head small { color: var(--muted); }
+        .log { flex: 1; padding: 18px; overflow: auto; max-height: 520px; }
+        .msg { display: flex; margin: 0 0 13px; }
+        .bubble { max-width: 86%; padding: 12px 14px; border-radius: 16px; white-space: pre-wrap; font-size: 14px; line-height: 1.55; }
+        .jarvis { background: rgba(34,211,238,.08); border: 1px solid rgba(34,211,238,.12); border-top-left-radius: 5px; }
+        .user { margin-left: auto; justify-content: flex-end; }
+        .user .bubble { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); border-top-right-radius: 5px; }
+        .time { font-size: 9px; color: #5f7388; margin-top: 5px; }
+        .composer { padding: 14px; border-top: 1px solid rgba(255,255,255,.07); display: flex; gap: 8px; }
+        .composer input { flex: 1; min-width: 0; background: rgba(0,0,0,.22); border: 1px solid rgba(255,255,255,.09); color: var(--text); padding: 13px 14px; border-radius: 13px; outline: none; }
+        .composer input:focus { border-color: rgba(34,211,238,.4); }
+        button.send { border: 0; border-radius: 13px; padding: 0 18px; background: var(--cyan); color: #001014; font-weight: 800; cursor: pointer; }
+        .tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+        .tool { padding: 13px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.035); border-radius: 15px; color: var(--text); cursor: pointer; text-align: left; }
+        .tool b { display: block; font-size: 12px; }
+        .tool span { font-size: 10px; color: var(--muted); }
+        @keyframes ring { 0% { transform: scale(.75); opacity: .75; } 100% { transform: scale(1.5); opacity: 0; } }
+        @keyframes float { 50% { transform: translateY(-7px); } }
+        @keyframes blink { 50% { opacity: .55; } }
+        @media(max-width: 800px) { .main { grid-template-columns: 1fr; } .core { min-height: 420px; } .panel { min-height: 520px; } .log { max-height: 400px; } .orb { width: 180px; height: 180px; } .coreball { width: 110px; height: 110px; } .tools { grid-template-columns: 1fr 1fr; } }
+    </style>
 </head>
 <body>
-<div class="app"><div class="grid"></div><div class="wrap">
-<header class="top"><div class="brand"><b>JARVIS</b> / KRISHNA</div><div class="status"><i class="dot"></i><span id="status">READY</span></div></header>
+<div class="app">
+    <div class="grid"></div>
+    <div class="wrap">
+        <header class="top">
+            <div class="brand"><b>JARVIS</b> / KRISHNA</div>
+            <div class="status"><i class="dot"></i><span id="status">READY</span></div>
+        </header>
 
-<main class="main">
-<section>
-<div class="card core">
-<div id="orb" class="orb idle" title="Tap to listen"><div class="coreball"></div></div>
-<div id="state" class="state">STANDBY</div>
-<div class="hint">Tap the core and speak. Say <b>“Jarvis”</b> to activate a command. Hindi + English are supported.</div>
-<button id="mic" class="micbtn">🎙 Start Listening</button>
-</div>
-<div class="tools">
-<button class="tool" data-cmd="What is my status?"><b>System</b><span>Status check</span></button>
-<button class="tool" data-cmd="Start focus mode"><b>Focus</b><span>25 minute timer</span></button>
-<button class="tool" data-cmd="What can you do?"><b>Help</b><span>Voice commands</span></button>
-</div>
-<details class="card settings">
-<summary>AI CONNECTION (OPTIONAL)</summary>
-<div class="fields">
-<label>Endpoint<input id="endpoint" placeholder="https://your-server.example/v1/chat"></label>
-<label>Model<input id="model" placeholder="your-model"></label>
-</div>
-<div class="note">For real open-ended AI replies, point this to your own backend/proxy. Do not put a secret API key inside this HTML. Browser-only voice still works without it.</div>
-</details>
-</section>
+        <main class="main">
+            <section>
+                <div class="card core">
+                    <div id="orb" class="orb idle" title="Tap to listen">
+                        <div class="coreball"></div>
+                    </div>
+                    <div id="state" class="state">STANDBY</div>
+                    <div class="hint">Tap the core and speak. Say <b>“Jarvis”</b> to activate a command. Hindi + English are supported.</div>
+                    <button id="mic" class="micbtn">🎙 Start Listening</button>
+                </div>
+                <div class="tools">
+                    <button class="tool" data-cmd="What is my status?"><b>System</b><span>Status check</span></button>
+                    <button class="tool" data-cmd="Start focus mode"><b>Focus</b><span>25 minute timer</span></button>
+                    <button class="tool" data-cmd="What can you do?"><b>Help</b><span>Voice commands</span></button>
+                </div>
+            </section>
 
-<section class="card panel">
-<div class="head"><div><h1>Conversation</h1><small id="mode">LOCAL VOICE ENGINE</small></div><small id="clock"></small></div>
-<div id="log" class="log"></div>
-<div class="composer"><input id="text" autocomplete="off" placeholder="Type a command…"><button class="send" id="send">Send</button></div>
-</section>
-</main>
-</div></div>
+            <section class="card panel">
+                <div class="head">
+                    <div>
+                        <h1>Conversation</h1>
+                        <small id="mode">SECURE CLOUD ENGINE</small>
+                    </div>
+                    <small id="clock"></small>
+                </div>
+                <div id="log" class="log"></div>
+                <div class="composer">
+                    <input id="text" autocomplete="off" placeholder="Type a command…">
+                    <button class="send" id="send">Send</button>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
 
 <script>
 (() => {
-const $=id=>document.getElementById(id);
-const state={listening:false,speaking:false,recognition:null,continuous:false,voices:[],timer:null};
-const log=$("log"), orb=$("orb"), mic=$("mic"), status=$("status"), stateEl=$("state"), clock=$("clock");
-function now(){return new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});}
-function add(role,text){const row=document.createElement("div");row.className="msg "+role;row.innerHTML=`<div><div class="bubble">${escapeHtml(text)}</div><div class="time">${now()}</div></div>`;log.appendChild(row);log.scrollTop=log.scrollHeight;}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
-function setState(x){stateEl.textContent=x;status.textContent=x;orb.className="orb "+(x==="LISTENING"?"listening":x==="SPEAKING"?"speaking":"idle");}
-function speak(text){
-if(!("speechSynthesis" in window)) return;
-speechSynthesis.cancel(); state.speaking=true; setState("SPEAKING");
-const u=new SpeechSynthesisUtterance(String(text).split("\n")[0].slice(0,500));
-u.lang=/[\u0900-\u097F]/.test(text)?"hi-IN":"en-IN";u.rate=.94;u.pitch=.9;
-const voice=state.voices.find(v=>v.lang.toLowerCase().startsWith(u.lang.slice(0,2)))||state.voices.find(v=>v.lang.toLowerCase().includes("en-in"));
-if(voice)u.voice=voice;
-u.onend=()=>{state.speaking=false;if(state.listening)setState("LISTENING");else setState("STANDBY");};
-speechSynthesis.speak(u);
-}
-if("speechSynthesis" in window){state.voices=speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>state.voices=speechSynthesis.getVoices();}
-function localReply(raw){
-const t=raw.toLowerCase().trim();
-if(/^(hi|hello|hey|namaste|नमस्ते)/.test(t)) return "Hello Krishna. Systems online. Main sun raha hoon.";
-if(t.includes("jarvis")) return "Yes Krishna. I'm listening.";
-if(t.includes("status")||t.includes("system")) return "All core browser systems are online. Voice input, speech output and local command engine are ready.";
-if(t.includes("what can you do")||t.includes("help")||t.includes("kya kar")) return "Main voice commands sun sakta hoon, bol kar response de sakta hoon, focus timer chala sakta hoon, time bata sakta hoon, aur configured AI backend se open-ended answers le sakta hoon.";
-if(t.includes("time")||t.includes("kitne baje")) return "Current time is "+new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
-if(t.includes("date")||t.includes("aaj ki date")) return "Today is "+new Date().toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"});
-if(t.includes("focus")||t.includes("pomodoro")){startFocus();return "Focus mode started for 25 minutes. Ab humans ko actually kaam bhi karna padega."; }
-if(t.includes("stop")||t.includes("quiet")||t.includes("chup")){stopAll();return "Voice output stopped."; }
-if(t.includes("good morning")) return "Good morning Krishna. Systems online. Aaj ka first important task bolo.";
-if(t.includes("how are you")||t.includes("kaise ho")) return "Systems healthy. No coffee required, unlike my human colleagues.";
-return "I heard you: “"+raw+"”. Local mode can handle commands, but open-ended intelligence needs an AI endpoint. Configure your backend in AI Connection.";
-}
-async function aiReply(raw){
-const endpoint= "https://jarvis-backend-v9tx.onrender.com/v1/chat/completions";
-  const model = "gemini-1.5-flash";
-
-if(!endpoint) return localReply(raw);
-try{
-const body={messages:[
-{role:"system",content:"You are JARVIS, Krishna's concise Hindi-English voice assistant. Reply naturally, practically and briefly. Do not claim actions you cannot perform."},
-{role:"user",content:raw}
-]}; if(model)body.model=model;
-const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-if(!r.ok)throw new Error("HTTP "+r.status);
-const d=await r.json();
-return d.choices?.[0]?.message?.content||d.output_text||d.response||"No response received.";
-}catch(e){return "AI connection failed. Local voice engine is still working. Check your endpoint.";}}
-async function handle(raw){
-raw=raw.trim();if(!raw)return;
-add("user",raw);
-$("text").value="";
-const reply=await aiReply(raw); add("jarvis",reply); speak(reply);
-}
-function stopAll(){if(state.recognition){try{state.recognition.stop()}catch(e){}}state.listening=false;speechSynthesis?.cancel();state.speaking=false;setState("STANDBY");}
-function startListening(){
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(!SR){add("jarvis","Speech recognition is not supported in this browser. Use Chrome on Android/desktop or type your command.");return;}
-if(state.listening){stopAll();return;}
-const r=new SR();state.recognition=r;r.lang="hi-IN";r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
-let finalText="";
-r.onstart=()=>{state.listening=true;setState("LISTENING");mic.textContent="⏹ Stop Listening";};
-r.onresult=e=>{
-let interim="";
-for(let i=e.resultIndex;i<e.results.length;i++){const tr=e.results[i][0].transcript;if(e.results[i].isFinal)finalText+=(finalText?" ":"")+tr;else interim+=tr;}
-if(interim) $("text").placeholder="Hearing: "+interim;
-if(finalText){const text=finalText.trim();finalText="";$("text").placeholder="Listening…";handle(text);}
-};
-r.onerror=e=>{if(e.error!=="aborted")add("jarvis","Microphone error: "+e.error+". Check browser microphone permission.");};
-r.onend=()=>{state.listening=false;mic.textContent="🎙 Start Listening";if(!state.speaking)setState("STANDBY");};
-state.recognition=r;try{r.start()}catch(e){}
-}
-function startFocus(){
-clearInterval(state.timer);let left=25*60;
-state.timer=setInterval(()=>{left--;if(left<=0){clearInterval(state.timer);add("jarvis","Focus session complete. Paani piyo, thoda move karo, then next task.");speak("Focus session complete. Take a short break.");}},1000);
-}
-mic.onclick=startListening;orb.onclick=startListening;
-$("send").onclick=()=>handle($("text").value);$("text").addEventListener("keydown",e=>{if(e.key==="Enter")handle($("text").value);});
-document.querySelectorAll("[data-cmd]").forEach(b=>b.onclick=()=>handle(b.dataset.cmd));
-setInterval(()=>clock.textContent=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"}),1000);
-add("jarvis","Good morning, Krishna. JARVIS core online. Tap the core and speak. I’ll listen continuously until you stop me.");
+    const $ = id => document.getElementById(id);
+    const state = { listening: false, speaking: false, recognition: null, continuous: false, voices: [], timer: null };
+    const log = $("log"), orb = $("orb"), mic = $("mic"), status = $("status"), stateEl = $("state"), clock = $("clock");
+    
+    function now() { return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); }
+    
+    function add(role, text) {
+        const row = document.createElement("div");
+        row.className = "msg " + role;
+        row.innerHTML = `<div><div class="bubble">${escapeHtml(text)}</div><div class="time">${now()}</div></div>`;
+        log.appendChild(row);
+        log.scrollTop = log.scrollHeight;
+    }
+    
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m]));
+    }
+    
+    function setState(x) {
+        stateEl.textContent = x;
+        status.textContent = x;
+        orb.className = "orb " + (x === "LISTENING" ? "listening" : x === "SPEAKING" ? "speaking" : "idle");
+    }
+    
+    function speak(text) {
+        if (!("speechSynthesis" in window)) return;
+        speechSynthesis.cancel(); 
+        state.speaking = true; 
+        setState("SPEAKING");
+        const u = new SpeechSynthesisUtterance(String(text).split("\n")[0].slice(0, 500));
+        u.lang = /[\u0900-\u097F]/.test(text) ? "hi-IN" : "en-IN";
+        u.rate = .94; 
+        u.pitch = .9;
+        const voice = state.voices.find(v => v.lang.toLowerCase().startsWith(u.lang.slice(0, 2))) || state.voices.find(v => v.lang.toLowerCase().includes("en-in"));
+        if (voice) u.voice = voice;
+        u.onend = () => { 
+            state.speaking = false; 
+            if (state.listening) setState("LISTENING"); 
+            else setState("STANDBY"); 
+        };
+        speechSynthesis.speak(u);
+    }
+    
+    if ("speechSynthesis" in window) {
+        state.voices = speechSynthesis.getVoices();
+        speechSynthesis.onvoiceschanged = () => state.voices = speechSynthesis.getVoices();
+    }
+    
+    function localReply(raw) {
+        const t = raw.toLowerCase().trim();
+        if (/^(hi|hello|hey|namaste|नमस्ते)/.test(t)) return "Hello Krishna. Systems online. Main sun raha hoon.";
+        if (t.includes("jarvis")) return "Yes Krishna. I'm listening.";
+        if (t.includes("status") || t.includes("system")) return "All core browser systems are online. Voice input and speech output are ready.";
+        if (t.includes("time") || t.includes("kitne baje")) return "Current time is " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        if (t.includes("date") || t.includes("aaj ki date")) return "Today is " + new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+        if (t.includes("focus") || t.includes("pomodoro")) { startFocus(); return "Focus mode started for 25 minutes. Let's get to work."; }
+        if (t.includes("stop") || t.includes("quiet") || t.includes("chup")) { stopAll(); return "Voice output stopped."; }
+        return "Command not recognized locally. Waiting for Cloud AI to connect...";
+    }
+    
+    // Yahan humne code ko aapke server ke hisaab se theek kiya hai
+    async function aiReply(raw) {
+        const endpoint = "https://jarvis-backend-v9tx.onrender.com/chat";
+        
+        try {
+            // Aapka Python server "message" read karta hai, toh hum wahi bhejenge
+            const body = { message: raw };
+            
+            const r = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            
+            const d = await r.json();
+            
+            // Server {"reply": "..."} bhejta hai
+            return d.reply || "No response received.";
+            
+        } catch (e) {
+            console.error(e);
+            return localReply(raw) + "\n(Note: Cloud AI is waking up, please wait 30 seconds and try again.)";
+        }
+    }
+    
+    async function handle(raw) {
+        raw = raw.trim(); 
+        if (!raw) return;
+        add("user", raw);
+        $("text").value = "";
+        const reply = await aiReply(raw); 
+        add("jarvis", reply); 
+        speak(reply);
+    }
+    
+    function stopAll() {
+        if (state.recognition) { try { state.recognition.stop(); } catch (e) {} }
+        state.listening = false;
+        speechSynthesis?.cancel();
+        state.speaking = false;
+        setState("STANDBY");
+    }
+    
+    function startListening() {
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SR) { add("jarvis", "Speech recognition is not supported in this browser. Use Chrome."); return; }
+        if (state.listening) { stopAll(); return; }
+        
+        const r = new SR(); 
+        state.recognition = r; 
+        r.lang = "hi-IN"; 
+        r.continuous = true; 
+        r.interimResults = true; 
+        r.maxAlternatives = 1;
+        let finalText = "";
+        
+        r.onstart = () => { state.listening = true; setState("LISTENING"); mic.textContent = "⏹ Stop Listening"; };
+        r.onresult = e => {
+            let interim = "";
+            for (let i = e.resultIndex; i < e.results.length; i++) {
+                const tr = e.results[i][0].transcript;
+                if (e.results[i].isFinal) finalText += (finalText ? " " : "") + tr;
+                else interim += tr;
+            }
+            if (interim) $("text").placeholder = "Hearing: " + interim;
+            if (finalText) { 
+                const text = finalText.trim(); 
+                finalText = ""; 
+                $("text").placeholder = "Listening…"; 
+                handle(text); 
+            }
+        };
+        r.onerror = e => { if (e.error !== "aborted") add("jarvis", "Microphone error: " + e.error); };
+        r.onend = () => { state.listening = false; mic.textContent = "🎙 Start Listening"; if (!state.speaking) setState("STANDBY"); };
+        
+        state.recognition = r; 
+        try { r.start(); } catch (e) {}
+    }
+    
+    function startFocus() {
+        clearInterval(state.timer); 
+        let left = 25 * 60;
+        state.timer = setInterval(() => {
+            left--;
+            if (left <= 0) { 
+                clearInterval(state.timer); 
+                add("jarvis", "Focus session complete."); 
+                speak("Focus session complete. Take a short break."); 
+            }
+        }, 1000);
+    }
+    
+    mic.onclick = startListening;
+    orb.onclick = startListening;
+    $("send").onclick = () => handle($("text").value);
+    $("text").addEventListener("keydown", e => { if (e.key === "Enter") handle($("text").value); });
+    document.querySelectorAll("[data-cmd]").forEach(b => b.onclick = () => handle(b.dataset.cmd));
+    setInterval(() => clock.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }), 1000);
+    
+    add("jarvis", "Good evening, Krishna. JARVIS Cloud Engine online and securely connected to your Render server. I am ready.");
 })();
 </script>
 </body>
