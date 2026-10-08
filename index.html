@@ -95,7 +95,8 @@ if(t.includes("how are you")||t.includes("kaise ho")) return "Systems healthy. N
 return "I heard you: “"+raw+"”. Local mode can handle commands, but open-ended intelligence needs an AI endpoint. Configure your backend in AI Connection.";
 }
 async function aiReply(raw){
-const endpoint=$("endpoint").value.trim(), model=$("model").value.trim();
+const endpoint= "https://jarvis-backend-v9tx.onrender.com/v1/chat/completions";
+
 if(!endpoint) return localReply(raw);
 try{
 const body={messages:[
