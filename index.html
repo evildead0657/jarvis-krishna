@@ -165,29 +165,51 @@
     }
     
     // Yahan humne code ko aapke server ke hisaab se theek kiya hai
-    async function aiReply(raw) {
-        const endpoint = "https://jarvis-backend-v9tx.onrender.com/chat";
-        
+    const API_BASE = "https://jarvis-backend-v9tx.onrender.com";
+
+    async function checkCloud() {
+        const mode = $("mode");
         try {
-            // Aapka Python server "message" read karta hai, toh hum wahi bhejenge
-            const body = { message: raw };
-            
-            const r = await fetch(endpoint, {
+            const r = await fetch(API_BASE + "/health", { method: "GET", cache: "no-store" });
+            const d = await r.json();
+            if (!r.ok || d.status !== "ok") throw new Error("Health check failed (HTTP " + r.status + ")");
+            mode.textContent = d.api_key_configured ? "CLOUD AI CONNECTED" : "SERVER ONLINE · API KEY MISSING";
+            mode.style.color = d.api_key_configured ? "#34d399" : "#fb7185";
+            return d;
+        } catch (e) {
+            mode.textContent = "CLOUD CONNECTION FAILED";
+            mode.style.color = "#fb7185";
+            console.error("JARVIS health check:", e);
+            return null;
+        }
+    }
+
+    async function aiReply(raw) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 50000);
+        try {
+            const r = await fetch(API_BASE + "/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body)
+                body: JSON.stringify({ message: raw }),
+                signal: controller.signal
             });
-            
-            if (!r.ok) throw new Error("HTTP " + r.status);
-            
-            const d = await r.json();
-            
-            // Server {"reply": "..."} bhejta hai
-            return d.reply || "No response received.";
-            
+            const d = await r.json().catch(() => ({}));
+            if (!r.ok) {
+                const detail = d.details || d.error || ("HTTP " + r.status);
+                throw new Error(detail);
+            }
+            if (!d.reply) throw new Error("Backend returned no reply.");
+            $("mode").textContent = "CLOUD AI CONNECTED";
+            $("mode").style.color = "#34d399";
+            return d.reply;
         } catch (e) {
-            console.error(e);
-            return localReply(raw) + "\n(Note: Cloud AI is waking up, please wait 30 seconds and try again.)";
+            console.error("JARVIS cloud error:", e);
+            $("mode").textContent = "CLOUD ERROR · " + (e.name === "AbortError" ? "TIMEOUT" : "CHECK BACKEND");
+            $("mode").style.color = "#fb7185";
+            return "Cloud AI connection failed: " + (e.name === "AbortError" ? "server took too long to respond." : e.message) + "\nLocal mode: " + localReply(raw);
+        } finally {
+            clearTimeout(timeout);
         }
     }
     
@@ -265,7 +287,8 @@
     document.querySelectorAll("[data-cmd]").forEach(b => b.onclick = () => handle(b.dataset.cmd));
     setInterval(() => clock.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }), 1000);
     
-    add("jarvis", "Good evening, Krishna. JARVIS Cloud Engine online and securely connected to your Render server. I am ready.");
+    add("jarvis", "Hello Krishna. JARVIS is ready. Checking cloud AI connection now…");
+    checkCloud();
 })();
 </script>
 </body>
